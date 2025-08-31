@@ -75,18 +75,22 @@ namespace Code
             {
                 case Controler.KeyboardDir.Right:
                     UpdateRight();
+                    Controler.dir = Controler.nextDir;
                     checkcollision = true;
                     break;
                 case Controler.KeyboardDir.Left:
                     UpdateLeft();
+                    Controler.dir = Controler.nextDir;
                     checkcollision = true;
                     break;
                 case Controler.KeyboardDir.Up:
                     UpdateUp();
+                    Controler.dir = Controler.nextDir;
                     checkcollision = true;
                     break;
                 case Controler.KeyboardDir.Down:
                     UpdateDown();
+                    Controler.dir = Controler.nextDir;
                     checkcollision = true;
                     break;
                 default:
@@ -129,12 +133,6 @@ namespace Code
                         Controler.dir = Controler.KeyboardDir.Freeze;
 
                     }
-                    //if (BodyPart.Type == "body")
-                    //{
-                    //    SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row, BodyPart.Color);
-                    //    NewBody.CreateSnakePart(NewBody, i);
-                    //    ListBodySnake.Remove(BodyPart);
-                    //}
                 }
             }
         }
@@ -169,12 +167,6 @@ namespace Code
                         Console.WriteLine("Edge Hit");
                         Controler.dir = Controler.KeyboardDir.Freeze;
                     }
-                    //if (BodyPart.Type == "body")
-                    //{
-                    //    SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row, BodyPart.Color);
-                    //    NewBody.CreateSnakePart(NewBody, i);
-                    //    ListBodySnake.Remove(BodyPart);
-                    //}
                 }
             }
         }
@@ -211,12 +203,6 @@ namespace Code
                         Controler.dir = Controler.KeyboardDir.Freeze;
 
                     }
-                    //if (BodyPart.Type == "body")
-                    //{
-                    //    SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row, BodyPart.Color);
-                    //    NewBody.CreateSnakePart(NewBody, i);
-                    //    ListBodySnake.Remove(BodyPart);
-                    //}
                 }
             }
         }
@@ -252,12 +238,6 @@ namespace Code
                         Controler.dir = Controler.KeyboardDir.Freeze;
 
                     }
-                    //if (BodyPart.Type == "body")
-                    //{
-                    //    SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, 0, BodyPart.Color);
-                    //    NewBody.CreateSnakePart(NewBody, i);
-                    //    ListBodySnake.Remove(BodyPart);
-                    //}
                 }
             }
         }
@@ -335,7 +315,7 @@ namespace Code
                     if (VecPart1 == VecPart2 && i != j)
                     {
                         Controler.dir = Controler.KeyboardDir.Freeze;
-                        Snake.SolidHit = true;
+                        SolidHit = true;
                     }
                 }
             }

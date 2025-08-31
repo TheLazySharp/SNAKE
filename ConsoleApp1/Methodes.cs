@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Raylib_cs;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace Code
         public bool IsWallOnSnake(Wall wall)
         {
             if (wall.column <= Game.snakeHeadInit + 1
-                && wall.column >= Game.snakeHeadInit - (Wall.maxSize +3)
+                && wall.column >= Game.snakeHeadInit - (Wall.maxSize + 3)
                 && wall.row <= Game.snakeHeadInit + 1
                 && wall.row >= Game.snakeHeadInit - Wall.maxSize)
             {
@@ -50,20 +51,16 @@ namespace Code
             else return false;
         }
 
-        //public bool GetCell(int column, int row)
-        //{
-        //    if (column < 0) return false;
-        //    if (row < 0) return false;
-        //    if (column >= Grid.MAPW) return false;
-        //    if (row >= Grid.MAPH) return false;
 
-        //    return cells[column, row];
-        //}
+        public void DrawCenteredText(string text, int y, int fontSize, int fontSpacing, Font font, Color color)
+        {
+            Vector2 textSize = Raylib.MeasureTextEx(font, text, fontSize, fontSpacing);
+            Vector2 textPos;
+            int w = Program.ScreenW;
+            textPos.X = w * 0.5f - textSize.X * 0.5f;
+            textPos.Y = y;
 
-        //public bool[] MooreNeighborhood(int column, int row)
-        //{
-        //    bool[] neighbors = new bool[8]; 
-        //    neighbors
-        //}
+            Raylib.DrawTextEx(font, text, textPos, fontSize, fontSpacing, color);
+        }
     }
 }

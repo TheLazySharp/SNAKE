@@ -8,9 +8,22 @@ namespace Code
 {
     public static class SceneManager
     {
-        private static Scene? currentScene;
+        public static Scene? currentScene;
+        
+        public enum enumScene
+        {
+            None,
+            Title,
+            Menu,
+            Game,
+            Victory,
+            HighScores,
+            GameOver
+        }
 
-        public static void Load<T>() where T : Scene, new() // mon type générique sera forcément une scene ( where T : Scene) et je veux l'instancier moi même ( new;)
+        public static enumScene runningScene;
+
+        public static void Load<T>() where T : Scene, new() // mon type générique sera forcément un enfant de scene ( where T : Scene) et je veux l'instancier moi même ( new;)
         {
             currentScene?.Unload(); // comme current scene est nullable on va l'executer que s'il n'est pas null
             currentScene = new T(); // j'instancie une nouvelle scene

@@ -17,36 +17,41 @@ namespace Code
     {
         Grid grid = new Grid();
         public Methodes methodes = new Methodes();
+        public ScoreManager score = new ScoreManager();
         public static List<Coordinates> ListOnGrid = new List<Coordinates>();
-        
+
         //SPEED INIT
-        public float SnakeUpdateTimer { get; private set; } = 0f;
+        public float SnakeUpdateTimer { get; private set; }
         public float SnakeMaxTimer { get; private set; } = 0.25f;
-        public float BulletUpdateTimer { get; private set; } = 0f;
+        public float BulletUpdateTimer { get; private set; }
         public float BulletMaxTimer { get; private set; } = 0.3f;
         public static float BulletSpeed { get; private set; }
 
         //GAME SETTINGS INIT
-        public int nbWall { get; private set; } = 30;
+        public int nbWall { get; private set; } = 1;
         public static int nbWallPart { get; private set; }
         public static int maxSnakeSize { get; set; }
-
-        //SCORE SETTINGS
-
-        public static float score = 0f;
-        public static float scoreMultiplier { get; private set; } = 0f;
-        public static int nbAppleToEatToIncreaseSpeed { get; private set; } 
-        public static int nbAppleEaten { get; private set; } = 0;
-        public static int appleInARow { get; private set; } = 0;
-        public static bool snakeHitWall { get; private set; } = false;
-        public static bool hedgehogKilled { get; private set; } = false;
         public static bool bulletIsShot { get; set; } = false;
+        public static bool snakeHitWall { get; set; } = false;
+        public static bool bulletHitWall { get; set; } = false;
+        public static bool hedgehogKilled { get; set; } = false;
 
         //SNAKE INIT
         public static int snakeHeadInit { get; private set; } = 10;
 
+        public Game()
+        {
+
+        }
+
         public void InitGame()
         {
+            SnakeUpdateTimer = 0f;
+            BulletUpdateTimer = 0f;
+            BulletSpeed = 0f;
+            Snake.SolidHit = false;
+            Snake.speed = Snake.baseSpeed;
+            score.InitScores();
             grid.InitGrid();
 
             //SNAKE INIT//
@@ -86,16 +91,10 @@ namespace Code
             BulletImpactOnWall();
             SnakeOnWallImpact();
             BulletImpactOnHedgehog();
-            ScoreManager();
+            score.ScoreUpdate();
 
             //LOOTS MANAGEMENT//
 
-            if (Loot.ListLoots.Count == 0) //prevent some rare situation where the methodes are out of range
-            {
-                Apple NewApple = new Apple("apple", Color.Red);
-                NewApple.CreateLoot(NewApple);
-            }
-            
             if (Loot.ListLoots.Where(x => x != null && x.type == "apple").Count() == 0)
             {
                 Apple NewApple = new Apple("apple", Color.Red);
@@ -116,9 +115,10 @@ namespace Code
 
             //SPEED MANAGEMENT
 
+            BulletSpeed = (Snake.speed + 0.1f) * 1.1f;
             if (BulletSpeed >= BulletMaxTimer) BulletSpeed = BulletMaxTimer;
             if (Snake.speed >= SnakeMaxTimer) Snake.speed = SnakeMaxTimer;
-            BulletSpeed = (Snake.speed + 0.1f) * 1.1f;
+
 
             SnakeUpdateTimer += Raylib.GetFrameTime();
             BulletUpdateTimer += Raylib.GetFrameTime();
@@ -164,6 +164,7 @@ namespace Code
                         if (loot.coordinates == wall.coordinates)
                         {
                             Console.WriteLine("Wall hit");
+                            bulletHitWall = true;
                             loot.RemoveLoot(loot);
                             wall.RemoveWall(wall);
                             Game.bulletIsShot = false;
@@ -177,7 +178,7 @@ namespace Code
             for (int i = Loot.ListLoots.Count - 1; i >= 0; i--)
             {
                 Loot bullet = Loot.ListLoots[i];
-                
+
                 if (bullet.type == "bullet")
                 {
                     for (int j = Loot.ListLoots.Count - 1; j >= 0; j--)
@@ -216,51 +217,12 @@ namespace Code
                     {
                         Snake SnakePart = Snake.ListBodySnake[i];
                         Snake.ListBodySnake.Remove(SnakePart);
-                        
+
                     }
                 }
             }
         }
 
-        public void ScoreManager()
-        {
-            nbAppleToEatToIncreaseSpeed = 5;
 
-
-            if (nbAppleEaten >= nbAppleToEatToIncreaseSpeed)
-            {
-                Snake.speed = nbAppleEaten / nbAppleToEatToIncreaseSpeed*0.02f;
-            }
-
-            scoreMultiplier = (1 + appleInARow / nbAppleToEatToIncreaseSpeed * 0.5f);
-
-            if (score < 0) score = 0f;
-            if (Apple.appleEat)
-            {
-                score += 100*scoreMultiplier;
-                nbAppleEaten++;
-                appleInARow++;
-
-                Apple.appleEat = false;
-            }
-
-            if (Hedgehog.hedgehogHit)
-            {
-                score -= 300 * scoreMultiplier;
-                appleInARow = 0;
-                Hedgehog.hedgehogHit = false;
-            }
-            if (snakeHitWall)
-            {
-                score -= 50 * scoreMultiplier;
-                appleInARow = 0;
-                snakeHitWall = false;
-            }
-            if (hedgehogKilled)
-            {
-                score += 200 * scoreMultiplier;
-                hedgehogKilled = false;
-            }
-        }
     }
 }

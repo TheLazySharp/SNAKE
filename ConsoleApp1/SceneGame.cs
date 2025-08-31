@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace Code
 {
-    public class GameScene : Scene
+    public class SceneGame : Scene
     {
         public Game game = new Game();
         //public PauseGame pause = new PauseGame();
         public static Drawer drawer = new Drawer();
         public static bool GameOnPause;
-        private PauseGame pause = new PauseGame();
+        private ScenePauseGame pause = new ScenePauseGame();
+        
         public override void Load()
         {
+            SceneManager.runningScene = SceneManager.enumScene.Game;
             game.InitGame();
             GameOnPause = false;
         }
@@ -35,6 +37,19 @@ namespace Code
                 pause.UpdatePause();
             }
 
+            //HOW TO WIN
+            if (!GameOnPause &&  Wall.ListWall.Count ==0)
+            {
+                SceneManager.Load<SceneVictory>();
+            }
+
+            //HOW TO LOSE
+            if (Snake.SolidHit || Snake.ListBodySnake.Count == 1)
+            {
+                SceneManager.Load<SceneGameOver>();
+
+            }
+
         }
 
         public override void Draw()
@@ -44,6 +59,13 @@ namespace Code
 
         public override void Unload()
         {
+            Game.ListOnGrid.Clear();
+            Snake.ListBodySnake.Clear();
+            Loot.ListLoots.Clear();
+            Wall.ListWall.Clear();
+            ScoreManager.QueueScores.Clear();
+            Controler.nextDir = Controler.KeyboardDir.Freeze;
+            
             //Console.WriteLine("Unloading Game scene");
         }
 

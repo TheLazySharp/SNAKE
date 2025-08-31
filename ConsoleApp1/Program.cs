@@ -28,12 +28,12 @@ public class Program
         Raylib.SetTargetFPS(60);
         //game.InitGame();
 
-        SceneManager.Load<GameScene>();
+        SceneManager.Load<SceneMenu>();
 
         while (!Raylib.WindowShouldClose())
         {
-            SceneManager.Update(Raylib.GetFrameTime());
        
+            SceneManager.Update(Raylib.GetFrameTime());
 
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.White);
@@ -44,7 +44,7 @@ public class Program
 
             //Raylib.DrawText($"Snake Lenght : {Snake.snakeLenght} || Body List : {Snake.ListBodySnake.Count}",1,1,10,Color.Black);
             Raylib.DrawText($"Bullet is shot : {Game.bulletIsShot}",1,1,10,Color.Black);
-            Raylib.DrawText($" Speed : {Snake.speed} || bullet speed : {Game.BulletSpeed}",1,15,10,Color.Black);
+            Raylib.DrawText($" Speed : {Math.Round((Snake.speed),2)} || bullet speed : {Math.Round((Game.BulletSpeed),2)}",1,15,10,Color.Black);
             //Raylib.DrawText($"Nb Ammo : {Snake.Ammo} || Nb Wall : {Wall.ListWall.Count}",1,15,10,Color.Black);
            
             Raylib.EndDrawing();

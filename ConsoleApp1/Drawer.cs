@@ -19,7 +19,8 @@ namespace Code
     public class Drawer
     {
         public Methodes methodes = new Methodes();
-        public PauseGame pause = new PauseGame();
+        public ScenePauseGame pause = new ScenePauseGame();
+        public ScoreManager scoreManager = new ScoreManager();
         private static int PANELW = Program.ScreenW - (Grid.MAPW * Grid.CELLW + 3 * Grid.OFFSETY);
         private static int PANELH = Grid.MAPH * Grid.CELLH;
         private static int PANELX = Grid.MAPW * Grid.CELLW + 2 * Grid.OFFSETX;
@@ -34,9 +35,9 @@ namespace Code
             LootsDraw();
             EdgesDraw();
             PanelDraw();
-            if (GameScene.GameOnPause) pause.PauseDraw();
+            ScoreManager.DrawPopingScores();
+            if (SceneGame.GameOnPause) pause.PauseDraw();
 
-            GameOverDraw();
         }
         public void SnakeDraw()
         {
@@ -66,12 +67,27 @@ namespace Code
             for (int i = 0; i < Loot.ListLoots.Count; i++)
             {
                 Loot loot = Loot.ListLoots[i];
-                //Vector2 lootPos = methodes.ToWorld(loot.column, loot.row);
-                //(int x, int y) castLoot = methodes.CastVector(lootPos);
                 (int x, int y) loots = methodes.GridToWorld(loot.column, loot.row);
                 if (loot.isVisible)
                 {
-                    Raylib.DrawRectangle(loots.x, loots.y, Grid.CELLW, Grid.CELLH, loot.color);
+                    if (loot.type == "apple")
+                    {
+                        Raylib.DrawCircle((int)(loots.x + Grid.CELLW*0.5f), (int)(loots.y + Grid.CELLH*0.5f),Grid.CELLH*0.5f, loot.color);
+                    }
+                    if (loot.type == "hedgehog")
+                    {
+                        Vector2 vTop = new Vector2(loots.x + Grid.CELLW * 0.5f, loots.y);
+                        Vector2 vLeft = new Vector2(loots.x, loots.y + Grid.CELLH);
+                        Vector2 vRight = new Vector2(loots.x + Grid.CELLW, loots.y + Grid.CELLH);
+
+                        Raylib.DrawTriangle(vTop,vLeft,vRight, loot.color);
+                    }
+
+                    else
+                    {
+                        Raylib.DrawRectangle(loots.x, loots.y, Grid.CELLW, Grid.CELLH, loot.color);
+
+                    }
                 }
 
             }
@@ -93,28 +109,16 @@ namespace Code
             Raylib.DrawRectangleLines(Grid.OFFSETX, Grid.OFFSETY, Grid.CELLW * Grid.MAPW, Grid.CELLH * Grid.MAPH, Color.Black);
         }
 
-        public void GameOverDraw()
-        {
-            if (Snake.SolidHit || Snake.ListBodySnake.Count == 1)
-            {
-                //Snake.ListBodySnake.Clear();
-                Raylib.DrawText("GAME OVER", 100, 100, 50, Color.Red);
-                Controler.dir = Controler.KeyboardDir.Freeze;
-                //sauvegarder emplacement et taille du snake détruit
-                // faire un mode gameover
-            }
-        }
-
         public void PanelDraw()
         {
             Raylib.DrawRectangleLines(PANELX, PANELY, PANELW, PANELH, Color.Black);
             Raylib.DrawText("SNAKE SURVIVOR", PANELX + 5, PANELY + 10, 40, Color.Black);
-            Raylib.DrawText($"SCORE : {Game.score}", PANELX + 5, PANELY + 2 * PANELSPACER, 30, Color.Black);
-            Raylib.DrawText(($"x {Game.scoreMultiplier}"), PANELX + 5, PANELY + 3 * PANELSPACER, 25, Color.Black);
+            Raylib.DrawText($"SCORE : {ScoreManager.score}", PANELX + 5, PANELY + 2 * PANELSPACER, 30, Color.Black);
+            Raylib.DrawText(($"x {Math.Round((ScoreManager.scoreMultiplier),2)}"), PANELX + 5, PANELY + 3 * PANELSPACER, 25, Color.Black);
             Raylib.DrawText($"Walls : {Wall.ListWall.Count}/{Game.nbWallPart}", PANELX + 5, PANELY + 4 * PANELSPACER, 30, Color.Black);
             Raylib.DrawText($"Snake size : {Snake.ListBodySnake.Count}", PANELX + 5, PANELY + 5 * PANELSPACER, 30, Color.Black);
             Raylib.DrawText($"Max snake size : {Game.maxSnakeSize}", PANELX + 5, PANELY + 6 * PANELSPACER, 30, Color.Black);
-            Raylib.DrawText($"Apple eaten : {Game.nbAppleEaten}", PANELX + 5, PANELY + 7 * PANELSPACER, 30, Color.Black);
+            Raylib.DrawText($"Apple eaten : {ScoreManager.nbAppleEaten}", PANELX + 5, PANELY + 7 * PANELSPACER, 30, Color.Black);
             Raylib.DrawText($"Hedgehog killed :", PANELX + 5, PANELY + 8 * PANELSPACER, 30, Color.Black);
             Raylib.DrawText($"Bullet shots :", PANELX + 5, PANELY + 9 * PANELSPACER, 30, Color.Black);
         }

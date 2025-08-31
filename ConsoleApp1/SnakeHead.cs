@@ -14,7 +14,6 @@ namespace Code
 {
     public class SnakeHead : Snake
     {
-        Color colorHead = new Color();
 
         public static int snakeHeadColumn { get; private set; } = 10;
         public static int snakeHeadRow { get; private set; } = 10;
