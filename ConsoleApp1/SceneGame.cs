@@ -10,35 +10,39 @@ namespace Code
     public class SceneGame : Scene
     {
         public Game game = new Game();
-        //public PauseGame pause = new PauseGame();
         public static Drawer drawer = new Drawer();
         public static bool GameOnPause;
-        private ScenePauseGame pause = new ScenePauseGame();
-        
+
+
         public override void Load()
         {
             SceneManager.runningScene = SceneManager.enumScene.Game;
-            game.InitGame();
-            GameOnPause = false;
+            if (SceneManager.previousScene == SceneManager.enumScene.Pause)
+            {
+                GameOnPause = false;
+                return;
+            }
+            else
+            {
+                game.InitGame();
+            }
         }
 
         public override void Update(float deltatime)
         {
             if (!GameOnPause) game.UpdateGame();
+
             if (Raylib.IsKeyPressed(KeyboardKey.Tab) && !GameOnPause)
             {
+                SceneManager.nextScene = SceneManager.enumScene.Pause;
                 Console.WriteLine("Pause ON");
                 GameOnPause = true;
+                SceneManager.Load<ScenePauseGame>();
+
 
             }
-            if (GameOnPause)
-            {
-                pause.LoadPause();
-                pause.UpdatePause();
-            }
-
             //HOW TO WIN
-            if (!GameOnPause &&  Wall.ListWall.Count ==0)
+            if (!GameOnPause && Wall.ListWall.Count == 0)
             {
                 SceneManager.Load<SceneVictory>();
             }
@@ -47,7 +51,12 @@ namespace Code
             if (Snake.SolidHit || Snake.ListBodySnake.Count == 1)
             {
                 SceneManager.Load<SceneGameOver>();
+            }
 
+            //Transition from pause to menu to unload game scene
+            if (SceneManager.nextScene == SceneManager.enumScene.Menu && SceneManager.previousScene == SceneManager.enumScene.Pause)
+            {
+                SceneManager.Load<SceneMenu>();
             }
 
         }
@@ -59,14 +68,21 @@ namespace Code
 
         public override void Unload()
         {
-            Game.ListOnGrid.Clear();
-            Snake.ListBodySnake.Clear();
-            Loot.ListLoots.Clear();
-            Wall.ListWall.Clear();
-            ScoreManager.QueueScores.Clear();
-            Controler.nextDir = Controler.KeyboardDir.Freeze;
-            
-            //Console.WriteLine("Unloading Game scene");
+
+            if (SceneManager.nextScene == SceneManager.enumScene.Pause)
+            {
+                return;
+            }
+            else
+            {
+                Game.ListOnGrid.Clear();
+                Snake.ListBodySnake.Clear();
+                Loot.ListLoots.Clear();
+                Wall.ListWall.Clear();
+                ScoreManager.QueueScores.Clear();
+                Controler.nextDir = Controler.KeyboardDir.Freeze;
+                SceneManager.previousScene = SceneManager.runningScene;
+            }
         }
 
     }

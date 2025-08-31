@@ -36,7 +36,6 @@ namespace Code
             EdgesDraw();
             PanelDraw();
             ScoreManager.DrawPopingScores();
-            if (SceneGame.GameOnPause) pause.PauseDraw();
 
         }
         public void SnakeDraw()

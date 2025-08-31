@@ -16,7 +16,7 @@ using System.Diagnostics.Metrics;
 
 namespace Code
 {
-    public class ScenePauseGame
+    public class ScenePauseGame : Scene
     {
         Controler.KeyboardDir saveDir = new Controler.KeyboardDir();
         public static int pauseMenuW = 800;
@@ -28,8 +28,13 @@ namespace Code
         public ScenePauseGame()
         {
         }
-        public void LoadPause()
+        public override void Load()
         {
+            SceneManager.runningScene = SceneManager.enumScene.Pause;
+            ClosePauseButton.isVisible = true;
+            MenuButton.isVisible = true;
+            CloseGameButton.isVisible = true;
+
             if (SceneGame.GameOnPause)
             {
                 saveDir = Controler.dir;
@@ -37,24 +42,23 @@ namespace Code
             }
         }
 
-        public void UpdatePause()
+        public override void Update(float deltatime)
         {
             if (SceneGame.GameOnPause)
             {
-                ClosePauseButton.isVisible = true;
-                MenuButton.isVisible = true;
-                CloseGameButton.isVisible = true;
                 ClosePauseButton.MouseHover(ClosePauseButton);
                 MenuButton.MouseHover(MenuButton);
                 CloseGameButton.MouseHover(CloseGameButton);
                 ClosePauseButtonEvent();
                 MenuButtonEvent();
                 CloseGameButtonEvent();
+
+
             }
 
         }
 
-        public void PauseDraw()
+        public override void Draw()
         {
             Raylib.DrawRectangle(Program.ScreenW / 2 - pauseMenuW / 2, 0, pauseMenuW, pauseMenuH, Color.Black);
             Raylib.DrawText("PAUSE", (int)(pauseMenuW * 0.5f), 50, 50, Color.White);
@@ -64,12 +68,25 @@ namespace Code
             CloseGameButton.ButtonDraw();
         }
 
+        public override void Unload()
+        {
+            ClosePauseButton.isVisible = false;
+            MenuButton.isVisible = false;
+            CloseGameButton.isVisible = false;
+            SceneManager.previousScene = SceneManager.runningScene;
+
+        }
+
         public void ClosePauseButtonEvent()
         {
             if (ClosePauseButton.isVisible && ClosePauseButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                SceneManager.nextScene = SceneManager.enumScene.Game;
+
                 Controler.nextDir = saveDir;
                 SceneGame.GameOnPause = false;
+                SceneManager.Load<SceneGame>();
+
                 Console.WriteLine("Pause OFF");
             }
         }
@@ -78,6 +95,7 @@ namespace Code
         {
             if (CloseGameButton.isVisible && CloseGameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                SceneManager.nextScene = SceneManager.enumScene.None;
                 Program.closeGame = true;
             }
         }
@@ -86,7 +104,8 @@ namespace Code
         {
             if (MenuButton.isVisible && MenuButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
-                SceneManager.Load<SceneMenu>();
+                SceneManager.nextScene = SceneManager.enumScene.Menu;
+                SceneManager.Load<SceneGame>();
             }
         }
     }

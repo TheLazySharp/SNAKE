@@ -7,7 +7,7 @@ using Raylib_cs;
 
 namespace Code
 {
-    public class SceneGameOver : Scene
+    public class SceneCommands : Scene
     {
         public Methodes methodes = new Methodes();
 
@@ -32,7 +32,6 @@ namespace Code
             MenuButtonEvent();
             CloseGameButtonEvent();
 
-            // Console.WriteLine("updating Menu scene");
         }
         public override void Draw()
         {
@@ -43,7 +42,6 @@ namespace Code
             MenuButton.ButtonDraw();
             CloseGameButton.ButtonDraw();
 
-            //Console.WriteLine("Drawing Menu scene");
         }
 
         public override void Unload()

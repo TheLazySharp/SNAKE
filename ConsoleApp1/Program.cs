@@ -28,6 +28,9 @@ public class Program
         Raylib.SetTargetFPS(60);
         //game.InitGame();
 
+        SceneManager.previousScene = SceneManager.enumScene.None;
+        SceneManager.runningScene = SceneManager.enumScene.None;
+        SceneManager.nextScene = SceneManager.enumScene.None;
         SceneManager.Load<SceneMenu>();
 
         while (!Raylib.WindowShouldClose())
@@ -42,11 +45,10 @@ public class Program
 
             //=================== DEBUG ======================= //
 
-            //Raylib.DrawText($"Snake Lenght : {Snake.snakeLenght} || Body List : {Snake.ListBodySnake.Count}",1,1,10,Color.Black);
-            Raylib.DrawText($"Bullet is shot : {Game.bulletIsShot}",1,1,10,Color.Black);
-            Raylib.DrawText($" Speed : {Math.Round((Snake.speed),2)} || bullet speed : {Math.Round((Game.BulletSpeed),2)}",1,15,10,Color.Black);
-            //Raylib.DrawText($"Nb Ammo : {Snake.Ammo} || Nb Wall : {Wall.ListWall.Count}",1,15,10,Color.Black);
-           
+            Raylib.DrawText($" Current Scene : {SceneManager.runningScene} || Previous Scene : {SceneManager.previousScene} || Next Scene : {SceneManager.nextScene}",1,15,10,Color.Black);
+            Raylib.DrawText($" Current Scene : {SceneManager.runningScene} || Previous Scene : {SceneManager.previousScene} || Next Scene : {SceneManager.nextScene}", 1, 15, 10, Color.White);
+
+
             Raylib.EndDrawing();
             
         if (closeGame) Raylib.CloseWindow();

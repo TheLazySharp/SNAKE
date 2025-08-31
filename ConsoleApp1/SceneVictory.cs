@@ -126,6 +126,7 @@ namespace Code
         {
             EnterNameButton.isVisible = false;
             EnterNamePanel.isVisible = false;
+            SceneManager.previousScene = SceneManager.runningScene;
         }
 
         public void ValidateNameEvent()

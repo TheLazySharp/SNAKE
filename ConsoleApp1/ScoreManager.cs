@@ -16,7 +16,6 @@ using System.Diagnostics.Metrics;
 namespace Code
 {
     public class ScoreManager
-
     {
         public static Methodes methodes = new Methodes();
         //SCORE SETTINGS
@@ -28,8 +27,8 @@ namespace Code
         public static int appleInARow { get; private set; }
 
 
-        private float deltatime = Raylib.GetFrameTime();
-        Timer popingScoreTimer;
+        private float deltatime = Raylib.GetFrameTime();    
+        Timer popingScoreTimer = new Timer(1f, true, onTimerTriggered);
 
         public static Queue<Vector3> QueueScores = new Queue<Vector3>();
 
@@ -43,7 +42,6 @@ namespace Code
             score = 0;
             nbAppleEaten = 0;
             appleInARow = 0;
-            popingScoreTimer = new Timer(1f, true, onTimerTriggered);
         }
 
         public static void onTimerTriggered()

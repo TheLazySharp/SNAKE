@@ -15,13 +15,17 @@ namespace Code
             None,
             Title,
             Menu,
+            Commands,
             Game,
+            Pause,
             Victory,
             HighScores,
             GameOver
         }
 
         public static enumScene runningScene;
+        public static enumScene previousScene;
+        public static enumScene nextScene;
 
         public static void Load<T>() where T : Scene, new() // mon type générique sera forcément un enfant de scene ( where T : Scene) et je veux l'instancier moi même ( new;)
         {
