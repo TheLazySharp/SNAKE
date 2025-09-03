@@ -116,7 +116,6 @@ namespace Code
             (int x, int y) hit = methodes.GridToWorld(column, row);
             Vector3 vScore = new Vector3(hit.x, hit.y, newScore);
             QueueScores.Enqueue(vScore);
-            QueueScores.Contains()
         }
 
         public static void DrawPopingScores()
