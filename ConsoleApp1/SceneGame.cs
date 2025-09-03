@@ -17,6 +17,7 @@ namespace Code
         public override void Load()
         {
             SceneManager.runningScene = SceneManager.enumScene.Game;
+            AudioManager.LoadMusic();
             if (SceneManager.previousScene == SceneManager.enumScene.Pause)
             {
                 GameOnPause = false;
@@ -30,9 +31,11 @@ namespace Code
 
         public override void Update(float deltatime)
         {
+            AudioManager.UpdateMusic();
+            
             if (!GameOnPause) game.UpdateGame();
 
-            if (Raylib.IsKeyPressed(KeyboardKey.Tab) && !GameOnPause)
+            if (Raylib.IsKeyPressed(KeyboardKey.Q) && !GameOnPause)
             {
                 SceneManager.nextScene = SceneManager.enumScene.Pause;
                 Console.WriteLine("Pause ON");
@@ -75,6 +78,7 @@ namespace Code
             }
             else
             {
+                AudioManager.StopMusic();
                 Game.ListOnGrid.Clear();
                 Snake.ListBodySnake.Clear();
                 Loot.ListLoots.Clear();
@@ -82,6 +86,7 @@ namespace Code
                 ScoreManager.QueueScores.Clear();
                 Controler.nextDir = Controler.KeyboardDir.Freeze;
                 SceneManager.previousScene = SceneManager.runningScene;
+                Console.WriteLine("unloading game");
             }
         }
 

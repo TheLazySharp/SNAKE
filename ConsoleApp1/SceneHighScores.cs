@@ -14,10 +14,10 @@ namespace Code
         int topScore = 5;
         int maxCountHighScores;
 
-        public static Button StartGameButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 280, 220, 50, Color.White, Color.Black, Color.LightGray, "New Game", 30, Color.White, Color.Black);
-        public static Button MenuButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 180, 220, 50, Color.White, Color.Black, Color.LightGray, "Menu", 30, Color.White, Color.Black);
-        public static Button CloseGameButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 80, 220, 50, Color.White, Color.Black, Color.LightGray, "Quit", 30, Color.White, Color.Black);
-        public static Button BackToMenuButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 80, 220, 50, Color.White, Color.Black, Color.LightGray, "Back", 30, Color.White, Color.Black);
+        public static Button StartGameButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 280, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "New Game", 30, Color.Maroon, Color.LightGray);
+        public static Button MenuButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 180, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Menu", 30, Color.Maroon, Color.LightGray);
+        public static Button CloseGameButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 80, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Quit Game", 30, Color.Maroon, Color.LightGray);
+        public static Button BackToMenuButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 80, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Back", 30, Color.Maroon, Color.LightGray);
 
         public override void Load()
         {
@@ -38,8 +38,8 @@ namespace Code
 
             }
 
-            SceneVictory.HighScores.Sort();
-            SceneVictory.HighScores.Reverse();
+            ScoreManager.HighScores.Sort();
+            ScoreManager.HighScores.Reverse();
         }
 
         public override void Update(float deltatime)
@@ -58,22 +58,22 @@ namespace Code
         }
         public override void Draw()
         {
-            Raylib.ClearBackground(Color.Black);
+            Raylib.ClearBackground(Color.LightGray);
 
-            methodes.DrawCenteredText("TOP 5 HIGH SCORES", 100, 50, 4, Raylib.GetFontDefault(), Color.White);
+            methodes.DrawCenteredText("TOP 5 HIGH SCORES", 100, 50, 4, Raylib.GetFontDefault(), Color.Maroon);
             StartGameButton.ButtonDraw();
             MenuButton.ButtonDraw();
             CloseGameButton.ButtonDraw();
             BackToMenuButton.ButtonDraw();
 
-            maxCountHighScores = Math.Min(topScore, SceneVictory.HighScores.Count);
+            maxCountHighScores = Math.Min(topScore, ScoreManager.HighScores.Count);
 
             int spaceY = 50;
 
             for (int i = 0; i < maxCountHighScores; i++)
             {
-                Tuple<int, string> highscore = SceneVictory.HighScores[i];
-                methodes.DrawCenteredText($"{highscore.Item2} - {highscore.Item1}", 200 + spaceY * i, 40, 4, Raylib.GetFontDefault(), Color.White);
+                Tuple<int, string> highscore = ScoreManager.HighScores[i];
+                methodes.DrawCenteredText($"{highscore.Item2} : {highscore.Item1}", 200 + spaceY * i, 40, 4, Raylib.GetFontDefault(), Color.Maroon);
             }
 
             //Console.WriteLine("Drawing Menu scene");

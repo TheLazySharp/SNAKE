@@ -51,13 +51,11 @@ namespace Code
             if (MouseX > x && MouseX < x + w && MouseY > y && MouseY < y + h)
             {
                 if (!isHover) isHover = true;
-                //Console.WriteLine($"Mouse is hover {visual}");
                 return true;
             }
             else
             {
                 if (isHover) isHover = false;
-                //Console.WriteLine($"Mouse is not hover {visual}");
                 return false;
             }
         }

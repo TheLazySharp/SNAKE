@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Raylib_cs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Raylib_cs;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Code
 {
@@ -11,70 +13,133 @@ namespace Code
     {
         public Methodes methodes = new Methodes();
 
-        public static Button StartGameButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 280, 220, 50, Color.White, Color.Black, Color.LightGray, "New Game", 30, Color.White, Color.Black);
-        public static Button MenuButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 180, 220, 50, Color.White, Color.Black, Color.LightGray, "Menu", 30, Color.White, Color.Black);
-        public static Button CloseGameButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 80, 220, 50, Color.White, Color.Black, Color.LightGray, "Quit Game", 30, Color.White, Color.Black);
+        int MAX_CHAR_NAME = 10;
+
+        public static Button EnterNamePanel = new Button((int)(Program.ScreenW * 0.5f - 150), (int)(Program.ScreenH * 0.5f), 300, 50, Color.Maroon, Color.LightGray, Color.LightGray, "", 30, Color.Maroon, Color.Maroon);
+        public static Button EnterNameButton = new Button((int)(Program.ScreenW * 0.5f - 110), (int)(Program.ScreenH * 0.5f) + 250, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Ok", 30, Color.Maroon, Color.LightGray);
+
+        char[] name;
+        string nameString;
+
+        int letterCount = 0;
+
+        int frameCounter = 0;
+
+        int nameX = (int)(Program.ScreenW * 0.5f - 150) + 5;
+        int nameY = (int)(Program.ScreenH * 0.5f);
+
+        int finalScore;
+
         public override void Load()
         {
             SceneManager.runningScene = SceneManager.enumScene.GameOver;
-            StartGameButton.isVisible = true;
-            MenuButton.isVisible = true;
-            CloseGameButton.isVisible = true;
-            Console.WriteLine("Loading Menu scene");
+
+            if (ScoreManager.score < 0)
+            {
+                finalScore = 0;
+            }
+            else
+            {
+                finalScore = ScoreManager.score;
+            }
+
+            EnterNameButton.isVisible = true;
+            EnterNamePanel.isVisible = true;
+            name = new char[MAX_CHAR_NAME + 1];
         }
 
         public override void Update(float deltatime)
         {
-            StartGameButton.MouseHover(StartGameButton);
-            MenuButton.MouseHover(MenuButton);
-            CloseGameButton.MouseHover(CloseGameButton);
-            StartGameButtonEvent();
-            MenuButtonEvent();
-            CloseGameButtonEvent();
+            EnterNameButton.MouseHover(EnterNameButton);
+            EnterNamePanel.MouseHover(EnterNamePanel);
+            ValidateNameEvent();
 
-            // Console.WriteLine("updating Menu scene");
+            if (EnterNamePanel.isHover)
+            {
+                Raylib.SetMouseCursor(MouseCursor.IBeam);
+
+                int key = Raylib.GetCharPressed();
+
+                while (key > 0)
+                {
+                    if (key >= 32 && key <= 125 && letterCount < MAX_CHAR_NAME)
+                    {
+                        name[letterCount] = (char)key;
+                        name[letterCount + 1] = '\0';
+                        letterCount++;
+                        Console.WriteLine(name);
+                    }
+
+                    key = Raylib.GetCharPressed();
+                }
+
+                if (Raylib.IsKeyPressed(KeyboardKey.Backspace))
+                {
+                    letterCount--;
+                    if (letterCount < 0) letterCount = 0;
+                    name[letterCount] = '\0';
+                    Console.WriteLine(name);
+                }
+
+                nameString = new string(name);
+
+            }
+
+
+            else Raylib.SetMouseCursor(MouseCursor.Default);
+
+            if (EnterNamePanel.isHover) frameCounter++;
+            else frameCounter = 0;
+
         }
         public override void Draw()
         {
-            Raylib.ClearBackground(Color.Black);
+            Raylib.ClearBackground(Color.LightGray);
 
-            methodes.DrawCenteredText("GAME OVER", 100, 50, 4, Raylib.GetFontDefault(), Color.White);
-            StartGameButton.ButtonDraw();
-            MenuButton.ButtonDraw();
-            CloseGameButton.ButtonDraw();
+            methodes.DrawCenteredText("GAME OVER !!", 100, 50, 4, Raylib.GetFontDefault(), Color.Maroon);
+            methodes.DrawCenteredText($"Score : {finalScore} pts", 180, 45, 4, Raylib.GetFontDefault(), Color.Maroon);
 
-            //Console.WriteLine("Drawing Menu scene");
+
+            methodes.DrawCenteredText("Enter your name", nameY - 60, 50, 4, Raylib.GetFontDefault(), Color.LightGray);
+            EnterNameButton.ButtonDraw();
+            EnterNamePanel.ButtonDraw();
+
+            Raylib.DrawText(nameString, nameX, nameY + 15, 30, Color.Maroon);
+            Raylib.DrawText($"{letterCount}/{MAX_CHAR_NAME}", nameX, nameY + 60, 20, Color.Maroon);
+
+            if (EnterNamePanel.isHover)
+            {
+                if (letterCount < MAX_CHAR_NAME)
+                {
+                    if ((frameCounter / 20) % 2 == 0) Raylib.DrawText("_", nameX + 4 + Raylib.MeasureText(nameString, 30), nameY + 15, 30, Color.Maroon);
+                }
+            }
         }
 
         public override void Unload()
         {
-            StartGameButton.isVisible = false;
-            MenuButton.isVisible = false;
-            CloseGameButton.isVisible = false;
+            EnterNameButton.isVisible = false;
+            EnterNamePanel.isVisible = false;
             SceneManager.previousScene = SceneManager.runningScene;
         }
 
-        public void StartGameButtonEvent()
+        public void ValidateNameEvent()
         {
-            if (StartGameButton.isVisible && StartGameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
+            if (EnterNameButton.isVisible && EnterNameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
-                SceneManager.Load<SceneGame>();
+                string subName = nameString.Substring(0, letterCount);
+                ScoreManager.HighScores.Add(new Tuple<int, string>(finalScore, subName));
+                
+                if (Program.nbGames == 1)
+                {
+                    ScoreManager.HighScores.Add(new Tuple<int, string>(2500, "Kaa"));
+                    ScoreManager.HighScores.Add(new Tuple<int, string>(10000, "Nagini"));
+                    ScoreManager.HighScores.Add(new Tuple<int, string>(1000, "Thulsa Doom"));
+                }
+
+                SceneManager.Load<SceneHighScores>();
             }
         }
 
-        public void CloseGameButtonEvent()
-        {
-            if (CloseGameButton.isVisible && CloseGameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
-            {
-                Program.closeGame = true;
-            }
-        }
-        public void MenuButtonEvent()
-        {
-            if (MenuButton.isVisible && MenuButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
-            {
-                SceneManager.Load<SceneMenu>();
-            }
-        }
     }
 }

@@ -49,6 +49,7 @@ namespace Code
                     }
             }
 
+            
 
             loot.color = this.color;
             loot.isVisible = true;

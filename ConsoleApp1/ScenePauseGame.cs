@@ -22,9 +22,10 @@ namespace Code
         public static int pauseMenuW = 800;
         public static int pauseMenuH = Program.ScreenH;
 
-        public static Button ClosePauseButton = new Button((int)(pauseMenuW * 0.5f), pauseMenuH - 280, 220, 50, Color.White, Color.Black, Color.LightGray, "Back to Game", 30, Color.White, Color.Black);
-        public static Button MenuButton = new Button((int)(pauseMenuW * 0.5f), pauseMenuH - 180, 220, 50, Color.White, Color.Black, Color.LightGray, "Menu", 30, Color.White, Color.Black);
-        public static Button CloseGameButton = new Button((int)(pauseMenuW * 0.5f), pauseMenuH - 80, 220, 50, Color.White, Color.Black, Color.LightGray, "Quit", 30, Color.White, Color.Black);
+        public static Button ClosePauseButton = new Button((int)(pauseMenuW * 0.5f), pauseMenuH - 380, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Back to Game", 30, Color.Maroon, Color.LightGray);
+        public static Button CommandsButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 280, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Commands", 30, Color.Maroon, Color.LightGray);
+        public static Button MenuButton = new Button((int)(pauseMenuW * 0.5f), pauseMenuH - 180, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Back to Menu", 30, Color.Maroon, Color.LightGray);
+        public static Button CloseGameButton = new Button((int)(pauseMenuW * 0.5f), pauseMenuH - 80, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Quit", 30, Color.Maroon, Color.LightGray);
         public ScenePauseGame()
         {
         }
@@ -32,6 +33,7 @@ namespace Code
         {
             SceneManager.runningScene = SceneManager.enumScene.Pause;
             ClosePauseButton.isVisible = true;
+            CommandsButton.isVisible = true;
             MenuButton.isVisible = true;
             CloseGameButton.isVisible = true;
 
@@ -48,11 +50,12 @@ namespace Code
             {
                 ClosePauseButton.MouseHover(ClosePauseButton);
                 MenuButton.MouseHover(MenuButton);
+                CommandsButton.MouseHover(CommandsButton);
                 CloseGameButton.MouseHover(CloseGameButton);
                 ClosePauseButtonEvent();
                 MenuButtonEvent();
                 CloseGameButtonEvent();
-
+                CommandsButtonEvent();
 
             }
 
@@ -60,18 +63,20 @@ namespace Code
 
         public override void Draw()
         {
-            Raylib.DrawRectangle(Program.ScreenW / 2 - pauseMenuW / 2, 0, pauseMenuW, pauseMenuH, Color.Black);
-            Raylib.DrawText("PAUSE", (int)(pauseMenuW * 0.5f), 50, 50, Color.White);
+            Raylib.DrawRectangle(Program.ScreenW / 2 - pauseMenuW / 2, 0, pauseMenuW, pauseMenuH, Color.LightGray);
+            Raylib.DrawText("PAUSE", (int)(pauseMenuW * 0.5f), 50, 50, Color.Maroon);
 
             ClosePauseButton.ButtonDraw();
             MenuButton.ButtonDraw();
             CloseGameButton.ButtonDraw();
+            CommandsButton.ButtonDraw();
         }
 
         public override void Unload()
         {
             ClosePauseButton.isVisible = false;
             MenuButton.isVisible = false;
+            CommandsButton.isVisible = false;
             CloseGameButton.isVisible = false;
             SceneManager.previousScene = SceneManager.runningScene;
 
@@ -106,6 +111,14 @@ namespace Code
             {
                 SceneManager.nextScene = SceneManager.enumScene.Menu;
                 SceneManager.Load<SceneGame>();
+            }
+        }
+        public void CommandsButtonEvent()
+        {
+            if (CommandsButton.isVisible && CommandsButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
+            {
+                SceneManager.nextScene = SceneManager.enumScene.Commands;
+                SceneManager.Load<SceneCommands>();
             }
         }
     }

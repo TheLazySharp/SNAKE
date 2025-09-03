@@ -17,7 +17,7 @@ namespace Code
 {
     public class ScoreManager
     {
-        public static Methodes methodes = new Methodes();
+        public Methodes methodes = new Methodes();
         //SCORE SETTINGS
 
         public static int score { get; private set; }
@@ -26,6 +26,7 @@ namespace Code
         public static int nbAppleEaten { get; private set; }
         public static int appleInARow { get; private set; }
 
+        public static List<Tuple<int, string>> HighScores = new List<Tuple<int, string>>();
 
         private float deltatime = Raylib.GetFrameTime();    
         Timer popingScoreTimer = new Timer(1f, true, onTimerTriggered);
@@ -59,7 +60,6 @@ namespace Code
             {
                 Snake.speed = nbAppleEaten / nbAppleToEatToIncreaseSpeed * 0.02f;
             }
-
             if (score < 0) score = 0;
 
             if (Apple.appleEat)
@@ -116,6 +116,7 @@ namespace Code
             (int x, int y) hit = methodes.GridToWorld(column, row);
             Vector3 vScore = new Vector3(hit.x, hit.y, newScore);
             QueueScores.Enqueue(vScore);
+            QueueScores.Contains()
         }
 
         public static void DrawPopingScores()

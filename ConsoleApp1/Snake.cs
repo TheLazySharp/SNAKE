@@ -28,14 +28,14 @@ namespace Code
         public int Row { get; private set; }
         public Coordinates Coordinates { get; private set; }
 
-        public static int Ammo = 0;
+        public static int Ammo=0;
 
         public static bool SolidHit { get; set; } = false; // check if something solid is hit and then gameover
 
         public static float baseSpeed = 0.0f; //snake tile to tile speed
         public static float speed = baseSpeed; //snake tile to tile speed
 
-        public Snake(string Type, int Column, int Row, Color Color)
+        public Snake(string Type, int Column, int Row)
         {
             this.Type = Type;
             this.Column = Column;
@@ -98,7 +98,6 @@ namespace Code
                     break;
             }
         }
-
         public static void UpdateRight()
         {
             for (int i = ListBodySnake.Count - 1; i >= 0; i--)
@@ -118,7 +117,7 @@ namespace Code
                     }
                     if (BodyPart.Type == "body")
                     {
-                        SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row, BodyPart.Color);
+                        SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row);
                         NewBody.CreateSnakePart(NewBody, i);
                         Game.ListOnGrid.Remove(BodyPart.Coordinates);
                         ListBodySnake.Remove(BodyPart);
@@ -153,7 +152,7 @@ namespace Code
                     }
                     if (BodyPart.Type == "body")
                     {
-                        SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row, BodyPart.Color);
+                        SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row);
                         NewBody.CreateSnakePart(NewBody, i);
                         Game.ListOnGrid.Remove(BodyPart.Coordinates);
                         ListBodySnake.Remove(BodyPart);
@@ -170,7 +169,6 @@ namespace Code
                 }
             }
         }
-
         public static void UpdateUp()
         {
             for (int i = ListBodySnake.Count - 1; i >= 0; i--)
@@ -188,7 +186,7 @@ namespace Code
                     }
                     if (BodyPart.Type == "body")
                     {
-                        SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row, BodyPart.Color);
+                        SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row);
                         NewBody.CreateSnakePart(NewBody, i);
                         Game.ListOnGrid.Remove(BodyPart.Coordinates);
                         ListBodySnake.Remove(BodyPart);
@@ -223,7 +221,7 @@ namespace Code
                     }
                     if (BodyPart.Type == "body")
                     {
-                        SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row, BodyPart.Color);
+                        SnakeBody NewBody = new SnakeBody("body", ListBodySnake[i - 1].Column, ListBodySnake[i - 1].Row);
                         NewBody.CreateSnakePart(NewBody, i);
                         Game.ListOnGrid.Remove(BodyPart.Coordinates);
                         ListBodySnake.Remove(BodyPart);
@@ -285,7 +283,7 @@ namespace Code
         public static void SnakeGrow()
         {
             checkcollision = false;
-            SnakeBody NewBody = new SnakeBody("body", ListBodySnake[ListBodySnake.Count - 1].Column, ListBodySnake[ListBodySnake.Count - 1].Row, Color.Green);
+            SnakeBody NewBody = new SnakeBody("body", ListBodySnake[ListBodySnake.Count - 1].Column, ListBodySnake[ListBodySnake.Count - 1].Row);
             NewBody.CreateSnakePart(NewBody, ListBodySnake.Count - 1);
             if (ListBodySnake.Count > Game.maxSnakeSize) Game.maxSnakeSize++;
 
@@ -296,7 +294,6 @@ namespace Code
             ListBodySnake.Remove(ListBodySnake[ListBodySnake.Count - 1]);
             Coordinates endOfSnake = new Coordinates(ListBodySnake[ListBodySnake.Count - 1].Column, ListBodySnake[ListBodySnake.Count - 1].Row);
             Game.ListOnGrid.Remove(endOfSnake);
-
         }
         public static void CheckCollision()
         {

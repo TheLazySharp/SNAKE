@@ -14,9 +14,11 @@ namespace Code
 {
     public class SnakeBody : Snake
     {
-        public SnakeBody(string Type, int Column, int Row, Color Color) : base("body", Column, Row, Color.Green)
+        public SnakeBody(string Type, int Column, int Row) : base("body", Column, Row)
         {
 
         }
+
+        
     }
 }

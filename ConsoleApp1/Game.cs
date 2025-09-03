@@ -20,6 +20,9 @@ namespace Code
         public ScoreManager score = new ScoreManager();
         public static List<Coordinates> ListOnGrid = new List<Coordinates>();
 
+        private Timer HedgehogsLoot = new Timer(10f, true, lootNewHedgehog);
+
+
         //SPEED INIT
         public float SnakeUpdateTimer { get; private set; }
         public float SnakeMaxTimer { get; private set; } = 0.25f;
@@ -36,6 +39,8 @@ namespace Code
         public static bool bulletHitWall { get; set; } = false;
         public static bool hedgehogKilled { get; set; } = false;
 
+        public static int nbHedgeHogKilled { get; set; }
+
         //SNAKE INIT
         public static int snakeHeadInit { get; private set; } = 10;
 
@@ -46,9 +51,12 @@ namespace Code
 
         public void InitGame()
         {
+            Program.nbGames++;
             SnakeUpdateTimer = 0f;
             BulletUpdateTimer = 0f;
             BulletSpeed = 0f;
+            nbHedgeHogKilled = 0;
+            Snake.Ammo = 0;
             Snake.SolidHit = false;
             Snake.speed = Snake.baseSpeed;
             score.InitScores();
@@ -57,8 +65,8 @@ namespace Code
             //SNAKE INIT//
 
             SnakeHead Head = new SnakeHead("head", snakeHeadInit, snakeHeadInit, Color.DarkGreen);
-            SnakeBody Body1 = new SnakeBody("body", snakeHeadInit - 1, snakeHeadInit, Color.DarkGreen);
-            SnakeBody Body2 = new SnakeBody("body", snakeHeadInit - 2, snakeHeadInit, Color.DarkGreen);
+            SnakeBody Body1 = new SnakeBody("body", snakeHeadInit - 1, snakeHeadInit);
+            SnakeBody Body2 = new SnakeBody("body", snakeHeadInit - 2, snakeHeadInit);
             Head.CreateSnakePart(Head, 0);
             Body1.CreateSnakePart(Body1, 1);
             Body2.CreateSnakePart(Body2, 2);
@@ -106,6 +114,9 @@ namespace Code
                 Hedgehog NewHedgehog = new Hedgehog("hedgehog", Color.Brown);
                 NewHedgehog.CreateLoot(NewHedgehog);
             }
+
+            HedgehogsLoot.UpdateTimerAtEnd(); // new hedgehog very xx sec
+
 
             if (Loot.ListLoots.Where(x => x != null && x.type == "bullet").Count() == 0)
             {
@@ -190,7 +201,7 @@ namespace Code
                             {
                                 Console.WriteLine("Hedgehod killed");
                                 hedgehogKilled = true;
-
+                                nbHedgeHogKilled++;
                                 target.RemoveLoot(target);
                                 bullet.RemoveLoot(bullet);
                                 Game.bulletIsShot = false;
@@ -217,10 +228,18 @@ namespace Code
                     {
                         Snake SnakePart = Snake.ListBodySnake[i];
                         Snake.ListBodySnake.Remove(SnakePart);
+                        Coordinates snakeOnGrid = new Coordinates(SnakePart.Column, SnakePart.Row);
+                        Game.ListOnGrid.Remove(snakeOnGrid);
 
                     }
                 }
             }
+        }
+
+        private static void lootNewHedgehog()
+        {
+            Hedgehog NewHedgehog = new Hedgehog("hedgehog", Color.Brown);
+            NewHedgehog.CreateLoot(NewHedgehog);
         }
 
 

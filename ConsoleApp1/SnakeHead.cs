@@ -18,7 +18,7 @@ namespace Code
         public static int snakeHeadColumn { get; private set; } = 10;
         public static int snakeHeadRow { get; private set; } = 10;
 
-        public SnakeHead(string Type, int Column, int Row, Color Color) : base("head", Column, Row, Color)
+        public SnakeHead(string Type, int Column, int Row, Color Color) : base("head", Column, Row)
         {
             if (Snake.Ammo > 0)
             {
@@ -27,6 +27,7 @@ namespace Code
             else
             {
                 this.Color = Color.DarkGreen;
+                
             }
         }
     }

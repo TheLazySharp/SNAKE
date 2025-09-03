@@ -18,8 +18,8 @@ namespace Code
 
         public override void Effect(Loot loot)
         {
-            //Console.WriteLine("Hedgehog hit");
             Snake.SnakeReduce();
+            Game.nbHedgeHogKilled++;
             hedgehogHit = true;
         }
     }

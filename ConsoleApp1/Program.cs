@@ -21,10 +21,13 @@ public class Program
     public readonly static int ScreenW = 1024;
     public readonly static int ScreenH = 768;
     public static bool closeGame = false;
+    public static int nbGames =0;
+
 
     public static Task Main(string[] args)
     {
         Raylib.InitWindow(ScreenW, ScreenH,"SNAKE SURVIVOR");
+        Raylib.InitAudioDevice();
         Raylib.SetTargetFPS(60);
         //game.InitGame();
 
