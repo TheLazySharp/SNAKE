@@ -25,6 +25,7 @@ namespace Code
             if (loot.isVisible)
             {
                 Console.WriteLine("Bullet loaded");
+                AudioManager.PlaySound(AudioManager.getAmmo);
                 Snake.Ammo++;
                 loot.isVisible = false;
             }

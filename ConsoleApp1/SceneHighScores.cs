@@ -19,6 +19,9 @@ namespace Code
         public static Button CloseGameButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 80, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Quit Game", 30, Color.Maroon, Color.LightGray);
         public static Button BackToMenuButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 80, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Back", 30, Color.Maroon, Color.LightGray);
 
+
+        Color textColor = Program.greenLemon;
+        Color backgroundColor = Program.darkGreen;
         public override void Load()
         {
             SceneManager.runningScene = SceneManager.enumScene.HighScores;
@@ -58,9 +61,9 @@ namespace Code
         }
         public override void Draw()
         {
-            Raylib.ClearBackground(Color.LightGray);
+            Raylib.ClearBackground(backgroundColor);
 
-            methodes.DrawCenteredText("TOP 5 HIGH SCORES", 100, 50, 4, Raylib.GetFontDefault(), Color.Maroon);
+            methodes.DrawCenteredText("TOP 5 HIGH SCORES", 100, 50, 4, Raylib.GetFontDefault(), textColor);
             StartGameButton.ButtonDraw();
             MenuButton.ButtonDraw();
             CloseGameButton.ButtonDraw();
@@ -73,7 +76,7 @@ namespace Code
             for (int i = 0; i < maxCountHighScores; i++)
             {
                 Tuple<int, string> highscore = ScoreManager.HighScores[i];
-                methodes.DrawCenteredText($"{highscore.Item2} : {highscore.Item1}", 200 + spaceY * i, 40, 4, Raylib.GetFontDefault(), Color.Maroon);
+                methodes.DrawCenteredText($"{highscore.Item2} : {highscore.Item1}", 200 + spaceY * i, 40, 4, Raylib.GetFontDefault(), textColor);
             }
 
             //Console.WriteLine("Drawing Menu scene");
@@ -92,22 +95,27 @@ namespace Code
         {
             if (StartGameButton.isVisible && StartGameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                StartGameButton.ButtonClic();
                 SceneManager.Load<SceneGame>();
             }
         }
 
         public void CloseGameButtonEvent()
         {
+
             if (CloseGameButton.isVisible && CloseGameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                CloseGameButton.ButtonClic();
                 Program.closeGame = true;
             }
         }
 
         public void MenuButtonEvent()
         {
-            if (((MenuButton.isVisible && MenuButton.isHover) || (BackToMenuButton.isVisible && BackToMenuButton.isHover) )&& Raylib.IsMouseButtonPressed(MouseButton.Left))
+
+            if (((MenuButton.isVisible && MenuButton.isHover) || (BackToMenuButton.isVisible && BackToMenuButton.isHover)) && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                MenuButton.ButtonClic();
                 SceneManager.Load<SceneMenu>();
             }
         }

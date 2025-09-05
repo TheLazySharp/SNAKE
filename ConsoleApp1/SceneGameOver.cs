@@ -14,12 +14,12 @@ namespace Code
         public Methodes methodes = new Methodes();
 
         int MAX_CHAR_NAME = 10;
+        char[] name;
+        string nameString;
 
         public static Button EnterNamePanel = new Button((int)(Program.ScreenW * 0.5f - 150), (int)(Program.ScreenH * 0.5f), 300, 50, Color.Maroon, Color.LightGray, Color.LightGray, "", 30, Color.Maroon, Color.Maroon);
         public static Button EnterNameButton = new Button((int)(Program.ScreenW * 0.5f - 110), (int)(Program.ScreenH * 0.5f) + 250, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Ok", 30, Color.Maroon, Color.LightGray);
 
-        char[] name;
-        string nameString;
 
         int letterCount = 0;
 
@@ -30,9 +30,14 @@ namespace Code
 
         int finalScore;
 
+        Color textColor = Program.greenLemon;
+        Color backgroundColor = Program.darkGreen;
+
         public override void Load()
         {
             SceneManager.runningScene = SceneManager.enumScene.GameOver;
+            AudioManager.PlaySound(AudioManager.gameOver);
+
 
             if (ScoreManager.score < 0)
             {
@@ -94,24 +99,25 @@ namespace Code
         }
         public override void Draw()
         {
-            Raylib.ClearBackground(Color.LightGray);
+            Raylib.ClearBackground(backgroundColor);
 
-            methodes.DrawCenteredText("GAME OVER !!", 100, 50, 4, Raylib.GetFontDefault(), Color.Maroon);
-            methodes.DrawCenteredText($"Score : {finalScore} pts", 180, 45, 4, Raylib.GetFontDefault(), Color.Maroon);
+            methodes.DrawCenteredText("GAME OVER !!", 100, 50, 4, Raylib.GetFontDefault(), textColor);
+            methodes.DrawCenteredText($"Score : {finalScore} pts", 180, 45, 4, Raylib.GetFontDefault(), textColor);
 
 
-            methodes.DrawCenteredText("Enter your name", nameY - 60, 50, 4, Raylib.GetFontDefault(), Color.LightGray);
+            methodes.DrawCenteredText("Enter your name", nameY - 60, 50, 4, Raylib.GetFontDefault(), textColor);
             EnterNameButton.ButtonDraw();
             EnterNamePanel.ButtonDraw();
 
-            Raylib.DrawText(nameString, nameX, nameY + 15, 30, Color.Maroon);
-            Raylib.DrawText($"{letterCount}/{MAX_CHAR_NAME}", nameX, nameY + 60, 20, Color.Maroon);
+            if (EnterNamePanel.isHover) Raylib.DrawText(nameString, nameX, nameY + 15, 30, backgroundColor);
+            else Raylib.DrawText(nameString, nameX, nameY + 15, 30, textColor);
+            Raylib.DrawText($"{letterCount}/{MAX_CHAR_NAME} (min 4 char)", nameX, nameY + 60, 20, textColor);
 
             if (EnterNamePanel.isHover)
             {
                 if (letterCount < MAX_CHAR_NAME)
                 {
-                    if ((frameCounter / 20) % 2 == 0) Raylib.DrawText("_", nameX + 4 + Raylib.MeasureText(nameString, 30), nameY + 15, 30, Color.Maroon);
+                    if ((frameCounter / 20) % 2 == 0) Raylib.DrawText("_", nameX + 4 + Raylib.MeasureText(nameString, 30), nameY + 15, 30, textColor);
                 }
             }
         }
@@ -125,11 +131,13 @@ namespace Code
 
         public void ValidateNameEvent()
         {
-            if (EnterNameButton.isVisible && EnterNameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
+            if (letterCount > 3 && EnterNameButton.isVisible && EnterNameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                EnterNameButton.ButtonClic();
+
                 string subName = nameString.Substring(0, letterCount);
                 ScoreManager.HighScores.Add(new Tuple<int, string>(finalScore, subName));
-                
+
                 if (Program.nbGames == 1)
                 {
                     ScoreManager.HighScores.Add(new Tuple<int, string>(2500, "Kaa"));

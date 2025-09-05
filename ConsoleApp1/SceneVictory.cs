@@ -7,7 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Formats.Asn1.AsnWriter;
 
-namespace Code
+//==============================================================
+//-------------------NOT USED ----------------------------------
+//==============================================================
+
+namespace Code 
 {
     public class SceneVictory : Scene
     {
@@ -30,10 +34,14 @@ namespace Code
 
         int finalScore;
 
+        Color textColor = Program.greenLemon;
+        Color backgroundColor = Program.darkGreen;
+
         public override void Load()
         {
             SceneManager.runningScene = SceneManager.enumScene.Victory;
-            
+            AudioManager.PlaySound(AudioManager.victory);
+
             if (ScoreManager.score < 0)
             {
                 finalScore = 0;
@@ -105,7 +113,7 @@ namespace Code
             EnterNamePanel.ButtonDraw();
 
             Raylib.DrawText(nameString, nameX, nameY + 15, 30, Color.Maroon);
-            Raylib.DrawText($"{letterCount}/{MAX_CHAR_NAME}", nameX, nameY + 60, 20, Color.Maroon);
+            Raylib.DrawText($"{letterCount}/{MAX_CHAR_NAME} (min 4 char)", nameX, nameY + 60, 20, Color.Maroon);
 
             if (EnterNamePanel.isHover)
             {
@@ -126,8 +134,9 @@ namespace Code
 
         public void ValidateNameEvent()
         {
-            if (EnterNameButton.isVisible && EnterNameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
+            if (letterCount > 3 && EnterNameButton.isVisible && EnterNameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                EnterNameButton.ButtonClic();
                 string subName = nameString.Substring(0, letterCount);
                 ScoreManager.HighScores.Add(new Tuple<int, string>(finalScore, subName));
 

@@ -12,6 +12,7 @@ using Color = Raylib_cs.Color;
 
 namespace Code
 {
+
     public class SnakeHead : Snake
     {
 
@@ -20,17 +21,10 @@ namespace Code
 
         public SnakeHead(string Type, int Column, int Row, Color Color) : base("head", Column, Row)
         {
-            if (Snake.Ammo > 0)
-            {
-                this.Color = Color.Black;
-            }
-            else
-            {
-                this.Color = Color.DarkGreen;
-                
-            }
+  
         }
     }
+
 
 
 }

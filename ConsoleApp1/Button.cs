@@ -25,6 +25,11 @@ namespace Code
         private Vector2 textSize;
         private Vector2 textPos;
         private Font fontDefault = Raylib.GetFontDefault();
+
+
+        Color textColor = Program.greenLemon;
+        Color backgroundColor = Program.darkGreen;
+
         public Button(int x, int y, int w, int h, Color lineColor, Color defaultColor, Color hoverColor, string text, int fontSize, Color defaultTextColor, Color hoverTextColor) : base(x, y, w, h, lineColor, defaultColor, hoverColor)
         {
             this.text = text;
@@ -34,6 +39,11 @@ namespace Code
             textSize = Raylib.MeasureTextEx(fontDefault, text, fontSize, fontSpacing);
             textPos.X = x + w * 0.5f - textSize.X * 0.5f;
             textPos.Y = y + h * 0.5f - textSize.Y * 0.5f;
+            this.lineColor = textColor; //lime
+            this.defaultColor = backgroundColor; //darker green
+            this.hoverColor = this.lineColor;
+            this.defaultTextColor = this.lineColor;
+            this.hoverTextColor = this.defaultColor;
         }
 
         public void ButtonDraw()
@@ -55,6 +65,11 @@ namespace Code
                 }
                 
             }
+        }
+
+        public void ButtonClic()
+        {
+            AudioManager.PlaySound(AudioManager.clic);
         }
 
     }

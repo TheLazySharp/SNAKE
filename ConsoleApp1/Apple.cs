@@ -19,6 +19,7 @@ namespace Code
         public override void Effect(Loot loot)
         {
             Console.WriteLine("Apple eaten");
+            AudioManager.PlaySound(AudioManager.grow);
             Snake.SnakeGrow();
             appleEat = true;
         }

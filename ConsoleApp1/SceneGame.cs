@@ -17,7 +17,7 @@ namespace Code
         public override void Load()
         {
             SceneManager.runningScene = SceneManager.enumScene.Game;
-            AudioManager.LoadMusic();
+            AudioManager.PlayMusic(AudioManager.gameMusic);
             if (SceneManager.previousScene == SceneManager.enumScene.Pause)
             {
                 GameOnPause = false;
@@ -27,11 +27,12 @@ namespace Code
             {
                 game.InitGame();
             }
+
         }
 
         public override void Update(float deltatime)
         {
-            AudioManager.UpdateMusic();
+            AudioManager.UpdateMusic(AudioManager.gameMusic);
             
             if (!GameOnPause) game.UpdateGame();
 
@@ -44,14 +45,14 @@ namespace Code
 
 
             }
-            //HOW TO WIN
-            if (!GameOnPause && Wall.ListWall.Count == 0)
-            {
-                SceneManager.Load<SceneVictory>();
-            }
+            //HOW TO WIN -- NOT USED
+            //if (!GameOnPause && Wall.ListWall.Count == 0)
+            //{
+            //    SceneManager.Load<SceneVictory>();
+            //}
 
             //HOW TO LOSE
-            if (Snake.SolidHit || Snake.ListBodySnake.Count == 1)
+            if (Snake.SolidHit || Snake.ListBodySnake.Count == 2)
             {
                 SceneManager.Load<SceneGameOver>();
             }
@@ -78,13 +79,14 @@ namespace Code
             }
             else
             {
-                AudioManager.StopMusic();
+                AudioManager.StopMusic(AudioManager.gameMusic);
                 Game.ListOnGrid.Clear();
                 Snake.ListBodySnake.Clear();
+                Snake.HeadDir.Clear();
                 Loot.ListLoots.Clear();
                 Wall.ListWall.Clear();
                 ScoreManager.QueueScores.Clear();
-                Controler.nextDir = Controler.KeyboardDir.Freeze;
+                Controler.nextDir = Controler.KeyboardDir.Start;
                 SceneManager.previousScene = SceneManager.runningScene;
                 Console.WriteLine("unloading game");
             }

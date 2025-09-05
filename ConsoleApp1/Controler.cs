@@ -9,14 +9,15 @@ namespace Code
 {
     public static class Controler
     {
-        public enum KeyboardDir { Right, Left, Up, Down, Freeze }
+        public enum KeyboardDir { Right, Left, Up, Down, Freeze, Start }
         public static KeyboardDir dir;
-        public static KeyboardDir nextDir = KeyboardDir.Freeze;
+        public static KeyboardDir nextDir = KeyboardDir.Start;
         public static bool AmmoLoaded { private set; get; } = false;
+
+
 
         public static void UpdateDir()
         {
-
             if (Raylib.IsKeyDown(KeyboardKey.Right) && dir != KeyboardDir.Left) nextDir = KeyboardDir.Right;
             if (Raylib.IsKeyDown(KeyboardKey.Left) && dir != KeyboardDir.Freeze && dir != KeyboardDir.Right) nextDir = KeyboardDir.Left;
             if (Raylib.IsKeyDown(KeyboardKey.Up) && dir != KeyboardDir.Down) nextDir = KeyboardDir.Up;

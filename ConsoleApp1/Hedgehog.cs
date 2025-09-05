@@ -19,6 +19,8 @@ namespace Code
         public override void Effect(Loot loot)
         {
             Snake.SnakeReduce();
+            AudioManager.PlaySound(AudioManager.HedgehogHit);
+
             Game.nbHedgeHogKilled++;
             hedgehogHit = true;
         }

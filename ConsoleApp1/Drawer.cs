@@ -26,9 +26,13 @@ namespace Code
         private static int PANELX = Grid.MAPW * Grid.CELLW + 2 * Grid.OFFSETX;
         private static int PANELY = Grid.OFFSETY;
         private static int PANELSPACER = 40;
+        private Texture2D currentTailTexture;
+        Color textColor = Program.greenLemon;
+        Color backgroundColor = Program.darkGreen;
 
         public void Draw()
         {
+            Raylib.ClearBackground(backgroundColor);
             GridDraw();
             WallsDraw();
             SnakeDraw();
@@ -36,7 +40,6 @@ namespace Code
             EdgesDraw();
             PanelDraw();
             ScoreManager.DrawPopingScores();
-
         }
         public void SnakeDraw()
         {
@@ -44,13 +47,85 @@ namespace Code
             {
                 Snake snake = Snake.ListBodySnake[i];
                 (int x, int y) SnakePart = methodes.GridToWorld(snake.Column, snake.Row);
+
                 if (snake.Type == "head")
                 {
-                    Raylib.DrawRectangle(SnakePart.x, SnakePart.y, Grid.CELLW, Grid.CELLH, snake.Color);
+                    switch (Controler.nextDir)
+                    {
+                        case Controler.KeyboardDir.Start:
+                            Raylib.DrawTexture(TextureManager.snakeHeadR, SnakePart.x, SnakePart.y, Color.White);
+                            break;
+
+                        case Controler.KeyboardDir.Right:
+                            if (Snake.Ammo == 0) Raylib.DrawTexture(TextureManager.snakeHeadR, SnakePart.x, SnakePart.y, Color.White);
+                            else Raylib.DrawTexture(TextureManager.snakeHeadLoadedR, SnakePart.x, SnakePart.y, Color.White);
+                            break;
+
+                        case Controler.KeyboardDir.Down:
+                            if (Snake.Ammo == 0) Raylib.DrawTexture(TextureManager.snakeHeadB, SnakePart.x, SnakePart.y, Color.White);
+                            else Raylib.DrawTexture(TextureManager.snakeHeadLoadedB, SnakePart.x, SnakePart.y, Color.White);
+                            break;
+
+                        case Controler.KeyboardDir.Left:
+                            if (Snake.Ammo == 0) Raylib.DrawTexture(TextureManager.snakeHeadL, SnakePart.x, SnakePart.y, Color.White);
+                            else Raylib.DrawTexture(TextureManager.snakeHeadLoadedL, SnakePart.x, SnakePart.y, Color.White);
+                            break;
+
+                        case Controler.KeyboardDir.Up:
+                            if (Snake.Ammo == 0) Raylib.DrawTexture(TextureManager.snakeHeadU, SnakePart.x, SnakePart.y, Color.White);
+                            else Raylib.DrawTexture(TextureManager.snakeHeadLoadedU, SnakePart.x, SnakePart.y, Color.White);
+                            break;
+                    }
+
                 }
+                
                 else if (snake.Type == "body")
                 {
-                    Raylib.DrawRectangle(SnakePart.x, SnakePart.y, Grid.CELLW, Grid.CELLH, new Color(10, 122, 33, 255 * (Snake.ListBodySnake.Count - i) / Snake.ListBodySnake.Count));
+                    if (i == Snake.ListBodySnake.Count - 1)
+                    {
+                        if (Controler.nextDir == Controler.KeyboardDir.Start)
+                        {
+                            Raylib.DrawTexture(TextureManager.snakeTailR, SnakePart.x, SnakePart.y, Color.White);
+                            currentTailTexture = TextureManager.snakeTailR;
+                        }
+
+                        Coordinates TailPos = new Coordinates(Snake.ListBodySnake[i-1].Column, Snake.ListBodySnake[i-1].Row);
+
+                        if (Snake.HeadDir.Count > 0 && TailPos == Snake.HeadDir.First().Item1)
+                        {
+                            switch (Snake.HeadDir.First().Item2)
+                            {
+
+                                case Controler.KeyboardDir.Right:
+                                    Raylib.DrawTexture(TextureManager.snakeTailR, SnakePart.x, SnakePart.y, Color.White);
+                                    currentTailTexture = TextureManager.snakeTailR;
+                                    Snake.HeadDir.Dequeue();
+                                    break;
+
+                                case Controler.KeyboardDir.Down:
+                                    Raylib.DrawTexture(TextureManager.snakeTailB, SnakePart.x, SnakePart.y, Color.White);
+                                    currentTailTexture = TextureManager.snakeTailB;
+                                    Snake.HeadDir.Dequeue();
+                                    break;
+
+                                case Controler.KeyboardDir.Left:
+                                    Raylib.DrawTexture(TextureManager.snakeTailL, SnakePart.x, SnakePart.y, Color.White);
+                                    currentTailTexture = TextureManager.snakeTailL;
+                                    Snake.HeadDir.Dequeue();
+                                    break;
+
+                                case Controler.KeyboardDir.Up:
+                                    Raylib.DrawTexture(TextureManager.snakeTailU, SnakePart.x, SnakePart.y, Color.White);
+                                    currentTailTexture = TextureManager.snakeTailU;
+                                    Snake.HeadDir.Dequeue();
+                                    break;
+                            }
+                        }
+
+                        else Raylib.DrawTexture(currentTailTexture, SnakePart.x, SnakePart.y, Color.White);
+
+                    }
+                    else Raylib.DrawRectangle(SnakePart.x, SnakePart.y, Grid.CELLW, Grid.CELLH, new Color(10, 122, 33, 255 * (Snake.ListBodySnake.Count - i) / Snake.ListBodySnake.Count));
                 }
             }
         }
@@ -63,7 +138,7 @@ namespace Code
                 {
                     int y = row * Grid.CELLH;
                     int x = column * Grid.CELLW;
-                    Raylib.DrawRectangleLines(x + Grid.OFFSETX, y + Grid.OFFSETY, Grid.CELLW, Grid.CELLH, Color.White);
+                    Raylib.DrawRectangle(x + Grid.OFFSETX, y + Grid.OFFSETY, Grid.CELLW, Grid.CELLH, Color.LightGray);
                 }
             }
         }
@@ -77,23 +152,19 @@ namespace Code
                 {
                     if (loot.type == "apple")
                     {
-                        Raylib.DrawCircle((int)(loots.x + Grid.CELLW * 0.5f), (int)(loots.y + Grid.CELLH * 0.5f), Grid.CELLH * 0.5f, loot.color);
+                        Raylib.DrawTexture(TextureManager.apple, loots.x, loots.y, Color.White);
                     }
                     if (loot.type == "hedgehog")
                     {
-                        Vector2 vTop = new Vector2(loots.x + Grid.CELLW * 0.5f, loots.y);
-                        Vector2 vLeft = new Vector2(loots.x, loots.y + Grid.CELLH);
-                        Vector2 vRight = new Vector2(loots.x + Grid.CELLW, loots.y + Grid.CELLH);
-
-                        Raylib.DrawTriangle(vTop, vLeft, vRight, loot.color);
+                        Raylib.DrawTexture(TextureManager.hedgehog, loots.x, loots.y, Color.White);
                     }
 
                     if (loot.type == "bullet")
                     {
-                        Raylib.DrawRectangle(loots.x, loots.y, Grid.CELLW, Grid.CELLH, loot.color);
+                        if (Game.bulletIsShot) Raylib.DrawTexture(TextureManager.venom, loots.x, loots.y, Color.White);
+                        else Raylib.DrawTexture(TextureManager.poison, loots.x, loots.y, Color.White);
                     }
                 }
-
             }
         }
 
@@ -103,28 +174,27 @@ namespace Code
             {
                 Wall wall = Wall.ListWall[i];
                 (int x, int y) wallpart = methodes.GridToWorld(wall.column, wall.row);
-                Raylib.DrawRectangle(wallpart.x, wallpart.y, Grid.CELLW, Grid.CELLH, wall.color);
-
+                Raylib.DrawTexture(TextureManager.wall, wallpart.x, wallpart.y, Color.White);
             }
         }
 
         public void EdgesDraw()
         {
-            Raylib.DrawRectangleLines(Grid.OFFSETX, Grid.OFFSETY, Grid.CELLW * Grid.MAPW, Grid.CELLH * Grid.MAPH, Color.Maroon);
+            Raylib.DrawRectangleLines(Grid.OFFSETX, Grid.OFFSETY, Grid.CELLW * Grid.MAPW, Grid.CELLH * Grid.MAPH, textColor);
         }
 
         public void PanelDraw()
         {
-            Raylib.DrawRectangleLines(PANELX, PANELY, PANELW, PANELH, Color.Maroon);
-            Raylib.DrawText("SNAKATOR", PANELX + 5, PANELY + 10, 40, Color.Maroon);
-            Raylib.DrawText($"SCORE : {ScoreManager.score}", PANELX + 5, PANELY + 2 * PANELSPACER, 30, Color.Maroon);
-            Raylib.DrawText(($"x {Math.Round((ScoreManager.scoreMultiplier), 2)}"), PANELX + 5, PANELY + 3 * PANELSPACER, 25, Color.Maroon);
-            Raylib.DrawText($"Walls : {Wall.ListWall.Count}/{Game.nbWallPart}", PANELX + 5, PANELY + 4 * PANELSPACER, 30, Color.Maroon);
-            Raylib.DrawText($"Snake size : {Snake.ListBodySnake.Count}", PANELX + 5, PANELY + 5 * PANELSPACER, 30, Color.Maroon);
-            Raylib.DrawText($"Max snake size : {Game.maxSnakeSize}", PANELX + 5, PANELY + 6 * PANELSPACER, 30, Color.Maroon);
-            Raylib.DrawText($"Apple eaten : {ScoreManager.nbAppleEaten}", PANELX + 5, PANELY + 7 * PANELSPACER, 30, Color.Maroon);
-            Raylib.DrawText($"Hedgehog killed :{Game.nbHedgeHogKilled}", PANELX + 5, PANELY + 8 * PANELSPACER, 30, Color.Maroon);
-            Raylib.DrawText($"Bullet shots :", PANELX + 5, PANELY + 9 * PANELSPACER, 30, Color.Maroon);
+            Raylib.DrawRectangleLines(PANELX, PANELY, PANELW, PANELH, textColor);
+            Raylib.DrawText("SNAKATOR", PANELX + 5, PANELY + 10, 40, textColor);
+            Raylib.DrawText($"SCORE : {ScoreManager.score}", PANELX + 5, PANELY + 2 * PANELSPACER, 30, textColor);
+            Raylib.DrawText(($"x {Math.Round((ScoreManager.scoreMultiplier), 2)}"), PANELX + 5, PANELY + 3 * PANELSPACER, 25, textColor);
+            Raylib.DrawText($"Walls : {Wall.ListWall.Count}/{Game.nbWallPart}", PANELX + 5, PANELY + 4 * PANELSPACER, 30, textColor);
+            Raylib.DrawText($"Snake size : {Snake.ListBodySnake.Count}", PANELX + 5, PANELY + 5 * PANELSPACER, 30, textColor);
+            Raylib.DrawText($"Max snake size : {Game.maxSnakeSize}", PANELX + 5, PANELY + 6 * PANELSPACER, 30, textColor);
+            Raylib.DrawText($"Apple eaten : {ScoreManager.nbAppleEaten}", PANELX + 5, PANELY + 7 * PANELSPACER, 30, textColor);
+            Raylib.DrawText($"Hedgehog killed :{Game.nbHedgeHogKilled}", PANELX + 5, PANELY + 8 * PANELSPACER, 30, textColor);
+            Raylib.DrawText($"Bullet shots :", PANELX + 5, PANELY + 9 * PANELSPACER, 30, textColor);
         }
     }
 }

@@ -26,6 +26,10 @@ namespace Code
         public static Button CommandsButton = new Button((int)(Program.ScreenW * 0.5f - 110), Program.ScreenH - 280, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Commands", 30, Color.Maroon, Color.LightGray);
         public static Button MenuButton = new Button((int)(pauseMenuW * 0.5f), pauseMenuH - 180, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Back to Menu", 30, Color.Maroon, Color.LightGray);
         public static Button CloseGameButton = new Button((int)(pauseMenuW * 0.5f), pauseMenuH - 80, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Quit", 30, Color.Maroon, Color.LightGray);
+
+        Color textColor = Program.greenLemon;
+        Color backgroundColor = Program.darkGreen;
+
         public ScenePauseGame()
         {
         }
@@ -39,7 +43,7 @@ namespace Code
 
             if (SceneGame.GameOnPause)
             {
-                saveDir = Controler.dir;
+                saveDir = Controler.nextDir;
                 Controler.nextDir = Controler.KeyboardDir.Freeze;
             }
         }
@@ -63,8 +67,9 @@ namespace Code
 
         public override void Draw()
         {
-            Raylib.DrawRectangle(Program.ScreenW / 2 - pauseMenuW / 2, 0, pauseMenuW, pauseMenuH, Color.LightGray);
-            Raylib.DrawText("PAUSE", (int)(pauseMenuW * 0.5f), 50, 50, Color.Maroon);
+            Raylib.DrawRectangle(Program.ScreenW / 2 - pauseMenuW / 2, 0, pauseMenuW, pauseMenuH, backgroundColor);
+            Raylib.DrawRectangleLines(Program.ScreenW / 2 - pauseMenuW / 2, 0, pauseMenuW, pauseMenuH, textColor);
+            Raylib.DrawText("PAUSE", (int)(pauseMenuW * 0.5f), 50, 50, textColor);
 
             ClosePauseButton.ButtonDraw();
             MenuButton.ButtonDraw();
@@ -86,6 +91,7 @@ namespace Code
         {
             if (ClosePauseButton.isVisible && ClosePauseButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+
                 SceneManager.nextScene = SceneManager.enumScene.Game;
 
                 Controler.nextDir = saveDir;
@@ -100,6 +106,7 @@ namespace Code
         {
             if (CloseGameButton.isVisible && CloseGameButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                CloseGameButton.ButtonClic();
                 SceneManager.nextScene = SceneManager.enumScene.None;
                 Program.closeGame = true;
             }
@@ -109,6 +116,7 @@ namespace Code
         {
             if (MenuButton.isVisible && MenuButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                MenuButton.ButtonClic();
                 SceneManager.nextScene = SceneManager.enumScene.Menu;
                 SceneManager.Load<SceneGame>();
             }
@@ -117,6 +125,7 @@ namespace Code
         {
             if (CommandsButton.isVisible && CommandsButton.isHover && Raylib.IsMouseButtonPressed(MouseButton.Left))
             {
+                CommandsButton.ButtonClic();
                 SceneManager.nextScene = SceneManager.enumScene.Commands;
                 SceneManager.Load<SceneCommands>();
             }

@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static Code.Controler;
 using Color = Raylib_cs.Color;
 
 namespace Code
@@ -43,6 +44,7 @@ namespace Code
             this.Color = Color;
         }
 
+        public static Queue<Tuple<Coordinates, KeyboardDir>> HeadDir = new Queue<Tuple<Coordinates, KeyboardDir>>(); //get snake head pos for rotating the tail accordingly
         public void CreateSnakePart(Snake snakePart, int insert)
         {
             snakePart.Type = this.Type;
@@ -75,21 +77,25 @@ namespace Code
             {
                 case Controler.KeyboardDir.Right:
                     UpdateRight();
+                    if (Controler.dir != Controler.nextDir) GetSnakeHeadPos(nextDir);
                     Controler.dir = Controler.nextDir;
                     checkcollision = true;
                     break;
                 case Controler.KeyboardDir.Left:
                     UpdateLeft();
+                    if (Controler.dir != Controler.nextDir) GetSnakeHeadPos(nextDir);
                     Controler.dir = Controler.nextDir;
                     checkcollision = true;
                     break;
                 case Controler.KeyboardDir.Up:
                     UpdateUp();
+                    if (Controler.dir != Controler.nextDir) GetSnakeHeadPos(nextDir);
                     Controler.dir = Controler.nextDir;
                     checkcollision = true;
                     break;
                 case Controler.KeyboardDir.Down:
                     UpdateDown();
+                    if (Controler.dir != Controler.nextDir) GetSnakeHeadPos(nextDir);
                     Controler.dir = Controler.nextDir;
                     checkcollision = true;
                     break;
@@ -321,6 +327,8 @@ namespace Code
         public static void SnakeShot()
         {
             Game.bulletIsShot = true;
+            AudioManager.PlaySound(AudioManager.shoot);
+
             for (int i = Loot.ListLoots.Count - 1; i >= 0; i--)
             {
                 Loot loot = Loot.ListLoots[i];
@@ -369,6 +377,12 @@ namespace Code
                 }
             }
 
+        }
+
+        public static void GetSnakeHeadPos(KeyboardDir SnakeDir)
+        {
+            Coordinates SnakeHeadPos = new Coordinates(ListBodySnake[0].Column, ListBodySnake[0].Row);
+            HeadDir.Enqueue(new Tuple<Coordinates, KeyboardDir>(SnakeHeadPos, SnakeDir));
         }
     }
 }
