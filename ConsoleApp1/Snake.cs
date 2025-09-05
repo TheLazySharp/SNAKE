@@ -319,6 +319,7 @@ namespace Code
                     {
                         Controler.dir = Controler.KeyboardDir.Freeze;
                         SolidHit = true;
+                        Console.WriteLine("Snake hit himself");
                     }
                 }
             }

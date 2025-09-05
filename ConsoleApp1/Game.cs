@@ -17,7 +17,7 @@ namespace Code
     {
         Grid grid = new Grid();
         public Methodes methodes = new Methodes();
-        public ScoreManager score = new ScoreManager();
+        public ScoreManager score = new ScoreManager("");
         public static List<Coordinates> ListOnGrid = new List<Coordinates>();
 
         private Timer HedgehogsLoot = new Timer(10f, true, spawnNewHedgehog);
@@ -225,7 +225,20 @@ namespace Code
                 if (SnakeHead == wall.coordinates)
                 {
                     AudioManager.PlaySound(AudioManager.wallHit);
+                    if (Snake.Ammo > 0)
+                    {
+                        for (int i = Loot.ListLoots.Count - 1; i >= 0; i--)
+                        {
+                            Loot loot = Loot.ListLoots[i];
+                            if (loot.type == "bullet")
+                            {
+                                loot.RemoveLoot(loot);
+                                Snake.Ammo = 0;
+                            }
+                        }
+                    }
                     wall.RemoveWall(wall);
+                    Console.WriteLine("Wall Hit");
                     snakeHitWall = true;
                     for (int i = Snake.ListBodySnake.Count - 1; i > 2; i--)
                     {

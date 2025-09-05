@@ -15,10 +15,6 @@ namespace Code
 
     public class SnakeHead : Snake
     {
-
-        public static int snakeHeadColumn { get; private set; } = 10;
-        public static int snakeHeadRow { get; private set; } = 10;
-
         public SnakeHead(string Type, int Column, int Row, Color Color) : base("head", Column, Row)
         {
   

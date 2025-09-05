@@ -10,6 +10,7 @@ namespace Code
     public class SceneHighScores : Scene
     {
         public Methodes methodes = new Methodes();
+        public ScoreManager Scores = new ScoreManager("save/scores.json");
 
         int topScore = 5;
         int maxCountHighScores;
@@ -40,7 +41,6 @@ namespace Code
                 BackToMenuButton.isVisible = false;
 
             }
-
             ScoreManager.HighScores.Sort();
             ScoreManager.HighScores.Reverse();
         }
@@ -54,10 +54,6 @@ namespace Code
             StartGameButtonEvent();
             MenuButtonEvent();
             CloseGameButtonEvent();
-
-
-
-            // Console.WriteLine("updating Menu scene");
         }
         public override void Draw()
         {
@@ -79,7 +75,6 @@ namespace Code
                 methodes.DrawCenteredText($"{highscore.Item2} : {highscore.Item1}", 200 + spaceY * i, 40, 4, Raylib.GetFontDefault(), textColor);
             }
 
-            //Console.WriteLine("Drawing Menu scene");
         }
 
         public override void Unload()

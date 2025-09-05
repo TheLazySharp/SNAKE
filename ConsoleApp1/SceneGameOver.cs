@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace Code
@@ -12,10 +13,12 @@ namespace Code
     public class SceneGameOver : Scene
     {
         public Methodes methodes = new Methodes();
+        public ScoreManager Scores = new ScoreManager("save/scores.json");
 
         int MAX_CHAR_NAME = 10;
         char[] name;
         string nameString;
+        string subName;
 
         public static Button EnterNamePanel = new Button((int)(Program.ScreenW * 0.5f - 150), (int)(Program.ScreenH * 0.5f), 300, 50, Color.Maroon, Color.LightGray, Color.LightGray, "", 30, Color.Maroon, Color.Maroon);
         public static Button EnterNameButton = new Button((int)(Program.ScreenW * 0.5f - 110), (int)(Program.ScreenH * 0.5f) + 250, 220, 50, Color.Maroon, Color.LightGray, Color.Maroon, "Ok", 30, Color.Maroon, Color.LightGray);
@@ -135,15 +138,17 @@ namespace Code
             {
                 EnterNameButton.ButtonClic();
 
-                string subName = nameString.Substring(0, letterCount);
+                subName = nameString.Substring(0, letterCount);
                 ScoreManager.HighScores.Add(new Tuple<int, string>(finalScore, subName));
 
-                if (Program.nbGames == 1)
-                {
-                    ScoreManager.HighScores.Add(new Tuple<int, string>(2500, "Kaa"));
-                    ScoreManager.HighScores.Add(new Tuple<int, string>(10000, "Nagini"));
-                    ScoreManager.HighScores.Add(new Tuple<int, string>(1000, "Thulsa Doom"));
-                }
+                //if (Program.nbGames == 1)
+                //{
+                //    ScoreManager.HighScores.Add(new Tuple<int, string>(2500, "Kaa"));
+                //    ScoreManager.HighScores.Add(new Tuple<int, string>(10000, "Nagini"));
+                //    ScoreManager.HighScores.Add(new Tuple<int, string>(1000, "Thulsa Doom"));
+                //}
+
+                Scores.SaveTofile();
 
                 SceneManager.Load<SceneHighScores>();
             }

@@ -22,6 +22,7 @@ namespace Code
             AudioManager.PlaySound(AudioManager.HedgehogHit);
 
             Game.nbHedgeHogKilled++;
+            Console.WriteLine("Hit by hedgehog");
             hedgehogHit = true;
         }
     }

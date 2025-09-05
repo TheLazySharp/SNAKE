@@ -20,7 +20,7 @@ namespace Code
     {
         public Methodes methodes = new Methodes();
         public ScenePauseGame pause = new ScenePauseGame();
-        public ScoreManager scoreManager = new ScoreManager();
+        public ScoreManager scoreManager = new ScoreManager("");
         private static int PANELW = Program.ScreenW - (Grid.MAPW * Grid.CELLW + 3 * Grid.OFFSETY);
         private static int PANELH = Grid.MAPH * Grid.CELLH;
         private static int PANELX = Grid.MAPW * Grid.CELLW + 2 * Grid.OFFSETX;
@@ -187,7 +187,8 @@ namespace Code
         {
             Raylib.DrawRectangleLines(PANELX, PANELY, PANELW, PANELH, textColor);
             Raylib.DrawText("SNAKATOR", PANELX + 5, PANELY + 10, 40, textColor);
-            Raylib.DrawText($"SCORE : {ScoreManager.score}", PANELX + 5, PANELY + 2 * PANELSPACER, 30, textColor);
+            Raylib.DrawText("SCORE : ", PANELX + 5, PANELY + 2 * PANELSPACER, 30, textColor);
+            Raylib.DrawText($"{ScoreManager.score}", PANELX + 140, PANELY + 2 * PANELSPACER, 30, Color.Red);
             Raylib.DrawText(($"x {Math.Round((ScoreManager.scoreMultiplier), 2)}"), PANELX + 5, PANELY + 3 * PANELSPACER, 25, textColor);
             Raylib.DrawText($"Walls : {Wall.ListWall.Count}/{Game.nbWallPart}", PANELX + 5, PANELY + 4 * PANELSPACER, 30, textColor);
             Raylib.DrawText($"Snake size : {Snake.ListBodySnake.Count}", PANELX + 5, PANELY + 5 * PANELSPACER, 30, textColor);

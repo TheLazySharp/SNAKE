@@ -2,16 +2,18 @@
 using Raylib_cs;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static System.Formats.Asn1.AsnWriter;
 using Color = Raylib_cs.Color;
-using System.Diagnostics.Metrics;
 
 namespace Code
 {
@@ -22,20 +24,24 @@ namespace Code
 
         public static int score { get; private set; }
         public static int nbAppleToEatToIncreaseSpeed { get; private set; } = 5;
-        public static float scoreMultiplier { get; private set; } 
+        public static float scoreMultiplier { get; private set; }
         public static int nbAppleEaten { get; private set; }
         public static int appleInARow { get; private set; }
 
         public static List<Tuple<int, string>> HighScores = new List<Tuple<int, string>>();
 
-        private float deltatime = Raylib.GetFrameTime();    
+        private float deltatime = Raylib.GetFrameTime();
+
         Timer popingScoreTimer = new Timer(1f, true, onTimerTriggered);
 
         public static Queue<Vector3> QueueScores = new Queue<Vector3>();
 
-        public ScoreManager()
-        {
+        string filePath;
 
+        public ScoreManager(string filePath) //thanks to ChatGPT
+        {
+            this.filePath = filePath;
+            HighScores = LoadScores(); 
         }
 
         public void InitScores()
@@ -54,13 +60,12 @@ namespace Code
         {
             popingScoreTimer.UpdateTimerAtEnd();
 
-            scoreMultiplier  = (1 + (appleInARow + Snake.ListBodySnake.Count-2)*0.02f)* (1+Snake.speed);
+            scoreMultiplier = (1 + (appleInARow + Snake.ListBodySnake.Count - 2) * 0.02f) * (1 + Snake.speed);
 
             if (nbAppleEaten >= nbAppleToEatToIncreaseSpeed)
             {
                 Snake.speed = nbAppleEaten / nbAppleToEatToIncreaseSpeed * 0.02f;
             }
-            if (score < 0) score = 0;
 
             if (Apple.appleEat)
             {
@@ -84,7 +89,7 @@ namespace Code
             }
             if (Game.snakeHitWall)
             {
-                int newScore = (int)(-50 * scoreMultiplier);
+                int newScore = (int)(-100 * scoreMultiplier);
                 score += newScore;
                 appleInARow = 0;
                 PopScore(newScore);
@@ -130,5 +135,28 @@ namespace Code
                 Raylib.DrawText($"{zScore}", x, y, 30, color);
             }
         }
+
+        public List<Tuple<int, string>> GetScores() //thanks to ChatGPT
+        {
+            return HighScores;
+        }
+
+        public void SaveTofile() //thanks to ChatGPT
+        {
+            string json = JsonSerializer.Serialize(HighScores, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(filePath, json);
+        }
+
+        public List<Tuple<int, string>> LoadScores() //thanks to ChatGPT
+        {
+            if (!File.Exists(filePath)) return new List<Tuple<int, string>>();
+
+            string json = File.ReadAllText(filePath);
+            
+            if (string.IsNullOrWhiteSpace(json))  return new List<Tuple<int, string>>();
+
+            return JsonSerializer.Deserialize<List<Tuple<int, string>>>(json) ?? new List<Tuple<int, string>>();
+        }
+
     }
 }
