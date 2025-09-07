@@ -104,8 +104,17 @@ namespace Code
         {
             Raylib.ClearBackground(backgroundColor);
 
-            methodes.DrawCenteredText("GAME OVER !!", 100, 50, 4, Raylib.GetFontDefault(), textColor);
-            methodes.DrawCenteredText($"Score : {finalScore} pts", 180, 45, 4, Raylib.GetFontDefault(), textColor);
+            if (finalScore > ScoreManager.ScoreTobeat)
+            {
+                methodes.DrawCenteredText("NEW RECORD !!", 100, 50, 4, Raylib.GetFontDefault(), textColor);
+                methodes.DrawCenteredText($"Score : {finalScore} pts", 180, 45, 4, Raylib.GetFontDefault(), textColor);
+            }
+            else
+            {
+                methodes.DrawCenteredText("GAME OVER !!", 100, 50, 4, Raylib.GetFontDefault(), textColor);
+                methodes.DrawCenteredText($"Score : {finalScore} pts", 180, 45, 4, Raylib.GetFontDefault(), textColor);
+            }
+
 
 
             methodes.DrawCenteredText("Enter your name", nameY - 60, 50, 4, Raylib.GetFontDefault(), textColor);
@@ -140,13 +149,6 @@ namespace Code
 
                 subName = nameString.Substring(0, letterCount);
                 ScoreManager.HighScores.Add(new Tuple<int, string>(finalScore, subName));
-
-                //if (Program.nbGames == 1)
-                //{
-                //    ScoreManager.HighScores.Add(new Tuple<int, string>(2500, "Kaa"));
-                //    ScoreManager.HighScores.Add(new Tuple<int, string>(10000, "Nagini"));
-                //    ScoreManager.HighScores.Add(new Tuple<int, string>(1000, "Thulsa Doom"));
-                //}
 
                 Scores.SaveTofile();
 

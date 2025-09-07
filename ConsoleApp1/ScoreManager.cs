@@ -2,6 +2,7 @@
 using Raylib_cs;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Drawing;
@@ -38,10 +39,13 @@ namespace Code
 
         string filePath;
 
+        public static int ScoreTobeat;
+
         public ScoreManager(string filePath) //thanks to ChatGPT
         {
             this.filePath = filePath;
-            HighScores = LoadScores(); 
+            HighScores = LoadScores("save/scores.json");
+            ScoreTobeat = GetHighScore();
         }
 
         public void InitScores()
@@ -147,15 +151,27 @@ namespace Code
             File.WriteAllText(filePath, json);
         }
 
-        public List<Tuple<int, string>> LoadScores() //thanks to ChatGPT
+        public List<Tuple<int, string>> LoadScores(string filePath) //thanks to ChatGPT
         {
             if (!File.Exists(filePath)) return new List<Tuple<int, string>>();
 
             string json = File.ReadAllText(filePath);
-            
-            if (string.IsNullOrWhiteSpace(json))  return new List<Tuple<int, string>>();
+
+            if (string.IsNullOrWhiteSpace(json)) return new List<Tuple<int, string>>();
 
             return JsonSerializer.Deserialize<List<Tuple<int, string>>>(json) ?? new List<Tuple<int, string>>();
+        }
+
+        public int GetHighScore()
+        {
+            if (HighScores.Count == 0) return 0;
+            int max = 0;
+            foreach (Tuple<int, string> score in HighScores)
+            {
+                if (score.Item1 > max)
+                    max = score.Item1;
+            }
+            return max;
         }
 
     }

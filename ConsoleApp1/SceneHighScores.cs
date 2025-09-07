@@ -39,7 +39,6 @@ namespace Code
                 MenuButton.isVisible = true;
                 CloseGameButton.isVisible = true;
                 BackToMenuButton.isVisible = false;
-
             }
             ScoreManager.HighScores.Sort();
             ScoreManager.HighScores.Reverse();
